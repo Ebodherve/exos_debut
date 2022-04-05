@@ -1,0 +1,33 @@
+#jeu du pendu
+
+from random import randint
+#/home/tsanga/Bureau/CONSERVE/conserve2/programmation/apprentissage/python/Python par les jeux/exercices/exercices7/exercice7.1/mots.txt
+
+fichier = open("/home/tsanga/Bureau/CONSERVE/conserve2/programmation/apprentissage/python/Python par les jeux/exercices/exercices7/exercice7.1/mots.txt", "r")
+liste_mots = fichier.readlines()                            # met tous les mots du fichiers dans une liste
+mot = liste_mots[randint(0,len(liste_mots)-1)]               # prend au hasard un mot dans la liste
+mot = mot.rstrip()                                          # supprime le caractère "saut à la ligne"
+mot = mot.upper()
+fichier.close()
+
+
+mot_devine = "-" * len(mot)
+print(mot_devine)
+nbr_essais = 0
+
+while mot_devine != mot:
+    lettre = input("Entrez une lettre ou '?' pour abandonner : ")
+    lettre = lettre[0]              # évite des erreurs si un mot est entré au lieu d'une lettre
+    if lettre == '?':
+        print('Le mot était',mot)
+        break
+    lettre = lettre.upper()
+    for i in range(len(mot)):
+        if lettre == mot[i]:
+            mot_devine = mot_devine[:i] + lettre + mot_devine[i+1:]
+    print(mot_devine)
+    nbr_essais += 1
+
+if mot == mot_devine:
+    print('Bravo ! Le mot',mot,'a été trouvé en',nbr_essais,'coups')
+

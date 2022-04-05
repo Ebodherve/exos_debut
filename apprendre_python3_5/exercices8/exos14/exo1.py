@@ -1,0 +1,195 @@
+
+from tkinter import *
+import math  
+
+
+#calcule la distance entre les duex astres
+def distance():
+    return math.sqrt((x1-x2)**2+(y1-y2)**2),math.sqrt((x2-x3)**2+(y2-y3)**2),math.sqrt((x1-x3)**2+(y1-y3)**2) 
+
+#definition d'une fonction de calcule d'une valeur absolue
+def val_ab(nbr) :
+    if nbr<0:
+        return -1*nbr
+    return nbr
+
+#création d'un vecteur à partir de point
+def vecteur(p1,p2) :
+    return [p2[0]-p1[0],p2[1]-p1[1]]
+
+#longueur d'un vecteur
+def longueur_vect(v):
+    return math.sqrt(v[0]**2+v[1]**2)
+
+#définition du vecteur unitaire d'un vecteur
+def  vect_unit(v):
+    longueur = longueur_vect(v)
+    return [v[0]/longueur,v[1]/longueur]
+
+#multiplication d'un vecteur par un scalaire
+def mult_vs(v,s) :
+    return [s*v[0],s*v[1]]   
+
+#somme de duex vecteurs
+def somme_vect(v1,v2):
+    return [v1[0]+v2[0],v1[1]+v2[1]]
+
+#deplacement d'un astre
+def deplace_ast(event):
+    global choix_ast,x1,y1,x2,y2,x3,y3,r1,r2,r3
+    if  choix_ast == 0 :
+        x1 = event.x
+        y1 = event.y
+        can.coords(ast1,x1-r1,y1-r1,x1+r1,y1+r1)
+        dist = distance()
+        forces = force_atract()
+        labd1.configure(text = "distance entre les astres bleu et orange : "+str(forces[0]))
+        labd2.configure(text = "distance entre les astres bleu et vert : "+str(forces[1]))
+        labd3.configure(text = "distance entre les astres orange et vert : "+str(forces[2]))
+        labf1.configure(text = "force d'attraction sur l'astre orange : "+str(dist[0]))
+        labf2.configure(text = "force d'attraction sur l'astre bleu : "+str(dist[1]))
+        labf3.configure(text = "force d'attraction sur l'astre vert : "+str(dist[2]))
+    elif choix_ast == 1:
+        x2 = event.x
+        y2 = event.y
+        can.coords(ast2,x2-r2,y2-r2,x2+r2,y2+r2)
+        dist = distance()
+        forces = force_atract()
+        labd1.configure(text = "distance entre les astres blues et oranges : "+str(forces[0]))
+        labd2.configure(text = "distance entre les astres blues et rouges : "+str(forces[1]))
+        labd3.configure(text = "distance entre les astres blues et verts : "+str(forces[2]))
+        labf1.configure(text = "force d'attraction sur l'astre orange : "+str(dist[0]))
+        labf2.configure(text = "force d'attraction sur l'astre bleu : "+str(dist[1]))
+        labf3.configure(text = "force d'attraction sur l'astre vert : "+str(dist[2]))
+    else :
+        x3 = event.x
+        y3 = event.y
+        can.coords(ast3,x3-r3,y3-r3,x3+r3,y3+r3)
+        dist = distance()
+        forces = force_atract()
+        labd1.configure(text = "distance entre les astres blues et oranges : "+str(forces[0]))
+        labd2.configure(text = "distance entre les astres blues et rouges : "+str(forces[1]))
+        labd3.configure(text = "distance entre les astres blues et verts : "+str(forces[2]))
+        labf1.configure(text = "force d'attraction sur l'astre orange : "+str(dist[0]))
+        labf2.configure(text = "force d'attraction sur l'astre bleu : "+str(dist[1]))
+        labf3.configure(text = "force d'attraction sur l'astre vert : "+str(dist[2]))    
+
+
+#calcul de la resultante des forces chacun des trois astres 
+def force_atract():
+    global G,m1,m2,x1,y1,x2,y2,x3,y3
+    dist = distance()
+    f12 = G*m1*m2/(dist[0])**2
+    f23 = G*m2*m3/(dist[1])**2
+    f13 = G*m1*m3/(dist[2])**2
+    #resultante des forces sur l'astre 1
+    vf12 = mult_vs(vect_unit(vecteur([x1,y1],[x2,y2])),f12)
+    vf13 = mult_vs(vect_unit(vecteur([x1,y1],[x3,y3])),f13)
+    f1 = longueur_vect(somme_vect(vf12,vf13))
+    #resultante des forces sur l'astre 2
+    vf21 = mult_vs(vect_unit(vecteur([x2,y2],[x1,y1])),f12)
+    vf23 = mult_vs(vect_unit(vecteur([x2,y2],[x3,y3])),f23)
+    f2 = longueur_vect(somme_vect(vf21,vf23))
+    #resultante des forces sur l'astre 3
+    vf31 = mult_vs(vect_unit(vecteur([x3,y3],[x1,y1])),f13)
+    vf32 = mult_vs(vect_unit(vecteur([x3,y3],[x2,y2])),f23)
+    f3 = longueur_vect(somme_vect(vf31,vf32))
+    
+    return f1,f2,f3
+
+
+
+def change_choice() :
+    global choix_ast
+    if choix_ast == 0:
+        choix_ast = 1
+        bc.configure(bg = "blue")
+    elif choix_ast == 1:
+        choix_ast = 2
+        bc.configure(bg = "green")
+    else:
+        choix_ast = 0
+        bc.configure(bg = "orange")
+
+
+
+#coordonnées des deux astres
+global x1,y1,x2,y2,x3,y3
+x1,y1,x2,y2,x3,y3 = 50,100,400,100,300,400 
+
+#rayon des deux astres et masses
+global r1,r2,r3,m1,m2,m3,G
+r1,r2,r3,m1,m2,m3 = 10,20,15,80,90,85
+G = 6.67*(10**(-11))
+
+#choix d'un astre
+global choix_ast
+choix_ast = 0
+
+#fenetre
+root = Tk()
+
+#canvas
+can = Canvas(root,bg = "grey", width = 600, height = 600)
+
+#gestion du deplacment des astres au clic de la souris
+can.bind("<Button-1>",deplace_ast)
+
+#astre 1
+ast1 = can.create_oval(x1-r1,y1-r1,x1+r1,y1+r1,fill = "orange")
+ast2 = can.create_oval(x2-r2,y2-r2,x2+r2,y2+r2,fill = "blue")
+ast3 = can.create_oval(x3-r3,y3-r3,x3+r3,y3+r3,fill = "green")
+
+#labels d'affichage des masses des deux boules  
+lab1 = Label(root,text = "astre orange, masse : "+str(m1),width = 75, bg = "orange")
+lab2 = Label(root,text = "astre bleu, masse : "+str(m2),width = 75, bg = "blue")
+lab3 = Label(root,text = "astre vert, masse : "+str(m3),width = 75, bg = "green")
+
+#differentes distances
+dist = distance()
+
+#différentes résultante des forces d'attraction
+res_forces = force_atract()
+
+#labels d'affichage des distances et forces d'attraction entre les deux boulles  
+labd1 = Label(root,text = "distance entre les astres orange et bleu : "+str(dist[0]), width = 75, bg = "gray")
+labd2 = Label(root,text = "distance entre les astres bleu et vert :"+str(dist[1]), width = 75, bg = "gray")
+labd3 = Label(root,text = "distance entre les astres orange et vert :"+str(dist[2]), width = 75, bg = "gray")
+
+
+labf1 = Label(root,text = "force d'attraction  : "+str(res_forces[0]), width = 75, bg = "red")
+labf2 = Label(root,text = "force d'attraction  : "+str(res_forces[1]), width = 75, bg = "red")
+labf3 = Label(root,text = "force d'attraction  : "+str(res_forces[2]), width = 75, bg = "red")
+
+
+#deplace un astre à droite
+bc = Button(root,text = "changer d'astre",bg = "orange",command = change_choice)  
+
+#boutton permettant de quitter la fenetre
+bq = Button(root,text = "quitter", command = root.quit)
+
+lab1.grid(row = 1)
+lab2.grid(row = 2)
+lab3.grid(row = 3)
+
+can.grid(row = 4,rowspan = 50)
+
+labf1.grid(row = 53,sticky = S)
+labf2.grid(row = 54,sticky = S)
+labf3.grid(row = 55,sticky = S)
+
+labd1.grid(row = 56,sticky = S)
+labd2.grid(row = 57,sticky = S)
+labd3.grid(row = 58,sticky = S)
+
+
+bc.grid(row = 5,column = 2,sticky = N)
+bq.grid(row = 52,column = 2,sticky = N)
+
+#démarrage de l'interface gaphique
+root.mainloop()
+
+
+
+
+

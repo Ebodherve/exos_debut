@@ -1,0 +1,10 @@
+Le bloc d’instructions qui suit directement une instruction try est exécuté par Python sous réserve. Si
+une erreur survient pendant l’exécution de l’une de ces instructions, alors Python annule cette
+instruction fautive et exécute à sa place le code inclus dans le bloc qui suit l’instruction except. Si au-
+cune erreur ne s’est produite dans les instructions qui suivent try, alors c’est le bloc qui suit l’instruc-
+tion else qui est exécuté (si cette instruction est présente). Dans tous les cas, l’exécution du
+programme peut se poursuivre ensuite avec les instructions ultérieures.
+Considérons par exemple un script qui demande à l’utilisateur d’entrer un nom de fichier, lequel
+fichier étant destiné à être ouvert en lecture. Si le fichier n’existe pas, nous ne voulons pas que le
+programme se « plante ». Nous voulons qu’un avertissement soit affiché, et éventuellement que l’utili-
+sateur puisse essayer d’entrer un autre nom
